@@ -1,0 +1,70 @@
+@import "../../../shared/variables";
+
+.post-card {
+  .card-container {
+    display: flex;
+    margin-bottom: 16px;
+    padding: 16px;
+    border-radius: 5px;
+    background-color: $white;
+    border-left: 8px solid $gray-secondary;
+    .card-left-content {
+      flex: 1;
+      margin-right: 16px;
+      .post-author,
+      .post-readed {
+        color: $gray-secondary;
+        font-size: $font-size-sm;
+      }
+      .post-author {
+        .author-name {
+          font-weight: bold;
+          color: $black;
+        }
+      }
+      .post-name {
+        font-size: $font-size-md;
+        margin: 16px 0 16px 0;
+      }
+      .participation {
+        display: flex;
+        margin-bottom: 4px;
+        .participation-flag {
+          height: 24px;
+          width: 24px;
+          margin-left: 6px;
+        }
+      }
+      .participation-description {
+        color: $black;
+      }
+    }
+    .card-right-content {
+      .card-image {
+        height: 150px;
+        width: 150px;
+        border-radius: 5px;
+      }
+    }
+  }
+}
+
+@media (max-width: $xs-size) {
+  .post-card {
+    .card-container {
+      padding: 8px;
+      .card-left-content {
+        .post-name {
+          font-size: 18px;
+          margin: 0 8px 16px 0;
+        }
+      }
+      .card-right-content {
+        .card-image {
+          height: 100px;
+          width: 100px;
+        }
+      }
+    }
+  }
+}

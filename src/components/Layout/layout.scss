@@ -1,0 +1,53 @@
+@import "../../shared/variables";
+$logo-width: 140px;
+$logo-width-sm: 100px;
+
+.app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  header {
+    display: flex;
+    align-items: center;
+    padding: 2px 8px;
+    .logo {
+      align-items: center;
+      width: $logo-width;
+    }
+    // I know I can do the next code in a more scalable and cleaner way setting space-between to the justify-content
+    // prop of the header, but I'm just trying to show here different ways in which you can have fun using css.
+    :nth-child(2) {
+      flex-grow: 1;
+      margin-right: $logo-width;
+    }
+  }
+  main {
+    display: flex;
+    height: 100%;
+    background: $gray;
+    > * {
+      padding: 24px;
+      flex: 1;
+    }
+  }
+}
+
+@media (max-width: $xs-size) {
+  .app {
+    header {
+      justify-content: space-between;
+      .logo {
+        width: $logo-width-sm;
+      }
+      :nth-child(2) {
+        flex-grow: 0;
+        margin-right: 0;
+      }
+    }
+    main {
+      > * {
+        padding: 12px;
+      }
+    }
+  }
+}
