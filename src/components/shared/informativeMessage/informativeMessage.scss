@@ -1,12 +1,13 @@
+@import "../../../styles/variables";
+
 .informative-message {
-  text-align: center;
   .informative-message-content {
     display: inline-block;
-    background: #fff;
+    background: $white;
     padding: 16px;
     margin: 16px 0;
     border-radius: 4px;
-    color: #6c6e70;
+    color: $gray-secondary;
     border: 1px solid rgb(204, 204, 204);
   }
 }

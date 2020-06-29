@@ -1,4 +1,4 @@
-@import "../../shared/variables";
+@import "../../styles/variables";
 $logo-width: 140px;
 $logo-width-sm: 100px;
 
@@ -23,16 +23,18 @@ $logo-width-sm: 100px;
   }
   main {
     display: flex;
-    height: 100%;
+    height: calc(100% - 56px);
     background: $gray;
     > * {
       padding: 24px;
+      display: flex;
+      flex-direction: column;
       flex: 1;
     }
   }
 }
 
-@media (max-width: $xs-size) {
+@media (max-width: $sm-size) {
   .app {
     header {
       justify-content: space-between;
@@ -45,6 +47,7 @@ $logo-width-sm: 100px;
       }
     }
     main {
+      height: calc(100% - 42px);
       > * {
         padding: 12px;
       }

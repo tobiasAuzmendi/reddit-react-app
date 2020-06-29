@@ -2,17 +2,23 @@ import { getPassedTime } from '../../utils/timeHelper';
 
 const defaultState = {
   posts: [],
+  paginationConfig: {
+    page: 0,
+    nextPageId: null,
+    prevPageId: null
+  },
+  readedPosts: [],
   isLoading: false
 };
 
-const mapPosts = (posts) => posts.map(post => ({
+const mapPosts = (posts, readedPosts) => posts.map(post => ({
   id: post.data.id,
   title: post.data.title,
   author: post.data.author,
   passedTime: getPassedTime(post.data.created_utc),
   thumbnail: post.data.thumbnail !== 'self' ? post.data.thumbnail : '',
   avatar: post.data.url,
-  readed: false
+  readed: readedPosts.find(p => p.id === post.data.id) ? true : false
 }));
 
 function reducer(state = defaultState, { type, payload }) {
@@ -21,7 +27,7 @@ function reducer(state = defaultState, { type, payload }) {
       return {
         ...state,
         isLoading: false,
-        posts: mapPosts(payload.posts)
+        posts: mapPosts(payload.posts, state.readedPosts)
       };
     case 'LOAD_POSTS_REQUEST':
       return {
@@ -31,12 +37,19 @@ function reducer(state = defaultState, { type, payload }) {
     case 'READ_UPDATE':
       return {
         ...state,
-        posts: state.posts.map(post => post.id === payload.postId ?
+        readedPosts: state.readedPosts.find(post => post.id === payload.post.id) ?
+        [...state.readedPosts] : [...state.readedPosts, payload.post],
+        posts: state.posts.map(post => post.id === payload.post.id ?
           {
             ...post,
             readed: payload.readed
           } : post
         )
+      };
+    case 'SHOW_READED':
+      return {
+        ...state,
+        posts: state.readedPosts
       };
     case 'DISMISS_POST':
       return {
@@ -47,6 +60,11 @@ function reducer(state = defaultState, { type, payload }) {
         return {
           ...state,
           posts: []
+        };
+    case 'PAGINATION_CONFIG_UPDATE':
+        return {
+          ...state,
+          paginationConfig: payload.paginationConfig
         };
     default:
       return state;

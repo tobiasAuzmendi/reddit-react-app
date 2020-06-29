@@ -1,4 +1,4 @@
-@import "../../../shared/variables";
+@import "../../../styles/variables";
 $spinner-size: 48px;
 
 .spinner {
@@ -17,7 +17,7 @@ $spinner-size: 48px;
   }
 }
 
-@media (max-width: $xs-size) {
+@media (max-width: sm-size) {
   .spinner {
     top: 42px;
     height: calc(100% - 42px);

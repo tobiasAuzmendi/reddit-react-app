@@ -12,12 +12,16 @@ export const setPostsLoading = () => ({
   }
 });
 
-export const setPostAsReaded = (postId) => ({
+export const setPostAsReaded = (post) => ({
   type: 'READ_UPDATE',
   payload: {
     readed: true,
-    postId
+    post
   }
+});
+
+export const showReaded = (post) => ({
+  type: 'SHOW_READED'
 });
 
 export const dismissPost = (postId) => ({
@@ -29,4 +33,11 @@ export const dismissPost = (postId) => ({
 
 export const dismissAll = () => ({
   type: 'DISMISS_ALL'
+});
+
+export const setPaginationConfig = (paginationConfig) => ({
+  type: 'PAGINATION_CONFIG_UPDATE',
+  payload: {
+    paginationConfig
+  }
 });

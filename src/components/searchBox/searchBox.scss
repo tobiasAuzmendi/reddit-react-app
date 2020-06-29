@@ -1,4 +1,4 @@
-@import "../../shared/variables";
+@import "../../styles/variables";
 
 .search-box-container {
   text-align: center;
@@ -16,7 +16,7 @@
   }
 }
 
-@media (max-width: $xs-size) {
+@media (max-width: $sm-size) {
   .search-box-container {
     input {
       width: auto;

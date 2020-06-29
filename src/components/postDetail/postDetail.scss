@@ -1,0 +1,26 @@
+@import "../../styles/variables";
+
+.post-detail {
+  border-left: 1px dashed $gray-secondary;
+  .title {
+    margin: 0 0 24px 0;
+    color: $gray-secondary;
+  }
+  .post-content {
+    text-align: center;
+    padding: 16px;
+    border-radius: 5px;
+    background-color: $white;
+    border-right: 8px solid $gray-secondary;
+    .post-name {
+      margin: 24px 0 32px 0;
+    }
+    .image-container {
+      .card-image {
+        width: 100%;
+        max-width: 600px;
+        border-radius: 5px;
+      }
+    }
+  }
+}

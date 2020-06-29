@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { debounce } from 'lodash';
+import debounce from 'lodash/debounce';
 import { setSearchText } from '../../redux/actions/searchBox';
 import './searchBox.scss';
 
@@ -35,5 +35,6 @@ class SearchBox extends React.PureComponent {
 const mapDispatchToProps = dispatch => ({
   setSearchText: drinks => dispatch(setSearchText(drinks))
 });
+
 
 export default connect(null, mapDispatchToProps)(SearchBox);

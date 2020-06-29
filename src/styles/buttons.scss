@@ -1,0 +1,25 @@
+@import "./variables";
+
+.reddit-app-button {
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 3px;
+  &:hover {
+    cursor: pointer;
+  }
+  .icon {
+    margin-right: 8px;
+  }
+}
+
+.reddit-app-primary-button {
+  background-color: $blue;
+  color: $white;
+  @extend .reddit-app-button;
+}
+
+.reddit-app-secondary-button {
+  background-color: $white;
+  color: $blue;
+  @extend .reddit-app-button;
+}

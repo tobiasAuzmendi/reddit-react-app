@@ -1,0 +1,10 @@
+@import "../../../styles/variables";
+
+.post-creation-information {
+  font-size: $font-size-sm;
+  color: $gray-secondary;
+  .author-name {
+    font-weight: bold;
+    color: $black;
+  }
+}

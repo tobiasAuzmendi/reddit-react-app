@@ -1,15 +1,20 @@
-@import "../../shared/variables";
+@import "../../styles/variables";
+@import "../../styles/buttons";
 
 .post-list {
   max-width: 400px;
   .list-content {
     overflow-y: auto;
-    padding-right: 8px;
-    height: calc(100% - 100px);
   }
   .title {
-    text-align: center;
-    margin: 0 0 24px 0;
     color: $gray-secondary;
+    margin: 0 0 16px 0;
+  }
+  .actions {
+    margin-bottom: 16px;
+    button {
+      @extend .reddit-app-secondary-button;
+      margin-right: 8px;
+    }
   }
 }
