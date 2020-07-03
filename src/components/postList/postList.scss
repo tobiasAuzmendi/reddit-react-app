@@ -2,19 +2,73 @@
 @import "../../styles/buttons";
 
 .post-list {
-  max-width: 400px;
-  .list-content {
-    overflow-y: auto;
-  }
-  .title {
-    color: $gray-secondary;
-    margin: 0 0 16px 0;
-  }
-  .actions {
-    margin-bottom: 16px;
-    button {
-      @extend .reddit-app-secondary-button;
-      margin-right: 8px;
+  width: 420px;
+  display: flex;
+  flex-direction: row;
+  .view-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding: 12px;
+    .list-content {
+      overflow-y: auto;
+      .post-card:last-child {
+        .card-container {
+          margin-bottom: 0;
+        }
+      }
     }
+    .actions {
+      margin-bottom: 16px;
+      button {
+        margin-right: 8px;
+      }
+    }
+    .transition-group {
+      .move-enter {
+        opacity: 0.01;
+        transform: translate(-40px, 0)
+      }
+      .move-enter-active {
+        opacity: 1;
+        transform: translate(0, 0);
+        transition: all 500ms ease-in;
+      }
+      .move-exit {
+        opacity: 1;
+        transform: translate(0, 0)
+      }
+      .move-exit-active {
+        opacity: 0.01;
+        transform: translate(40px, 0);
+        transition: all 500ms ease-in;
+      }
+    }
+  }
+  .nav-buttons-column {
+    display: none;
+    min-width: $nav-buttons-column-width;
+  }
+}
+
+@media (max-width: $sm-size) {
+  .post-list {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    transition: left 400ms ease-out;
+    left: calc(-100% + #{$nav-buttons-column-width});
+    .nav-buttons-column {
+      display: flex;
+    }
+  }
+  .post-list.visible {
+    left: 0;
+  }
+  .post-list + * {
+    position: absolute;
+    left: 54px;
+    width: calc(100% - #{$nav-buttons-column-width});
   }
 }

@@ -4,22 +4,31 @@
   padding: 8px 16px;
   border: 0;
   border-radius: 3px;
+  outline-color: transparent;
   &:hover {
     cursor: pointer;
   }
-  .icon {
-    margin-right: 8px;
+  &.icon-text-button {
+    .icon {
+      margin-right: 8px;
+    }
+  }
+  &[disabled] {
+    .icon {
+      opacity: 0.5;
+    }
   }
 }
 
 .reddit-app-primary-button {
-  background-color: $blue;
-  color: $white;
+  background-color: $white;
+  color: $blue;
   @extend .reddit-app-button;
 }
 
+// I know I'm not using this class (so far) but I just want to show the @extend usage.
 .reddit-app-secondary-button {
   background-color: $white;
-  color: $blue;
+  color: $reddit-orange;
   @extend .reddit-app-button;
 }

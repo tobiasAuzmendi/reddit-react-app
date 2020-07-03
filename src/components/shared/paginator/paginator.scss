@@ -12,9 +12,7 @@
     font-size: 24px;
   }
   button {
-    @extend .reddit-app-secondary-button;
-    .icon {
-      margin-right: 0;
-    }
+    // I know I can put this class name to the button component. I'm just showing the @extend usage
+    @extend .reddit-app-primary-button;
   }
 }

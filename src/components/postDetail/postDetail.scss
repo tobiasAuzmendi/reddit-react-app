@@ -1,10 +1,14 @@
 @import "../../styles/variables";
 
 .post-detail {
-  border-left: 1px dashed $gray-secondary;
-  .title {
-    margin: 0 0 24px 0;
-    color: $gray-secondary;
+  overflow: auto;
+  border-left: 2px solid $gray-secondary;
+  .actions {
+    display: none;
+    margin-bottom: 16px;
+    button {
+      margin-right: 8px;
+    }
   }
   .post-content {
     text-align: center;
@@ -16,11 +20,19 @@
       margin: 24px 0 32px 0;
     }
     .image-container {
-      .card-image {
+      text-align: center;
+      .clickable-image {
         width: 100%;
         max-width: 600px;
         border-radius: 5px;
+        margin: auto;
       }
     }
+  }
+}
+
+@media (max-width: $sm-size) {
+  .post-detail {
+    border-left: none;
   }
 }

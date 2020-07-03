@@ -4,7 +4,7 @@ export const getPassedTime = (dateTimeStamp) => {
   if (!dateTimeStamp) {
     return 'unknown';
   }
-  const momentDate = moment(dateTimeStamp);
+  const momentDate = moment.unix(dateTimeStamp);
   const now = moment();
   const years = now.diff(momentDate, 'years');
   const months = now.diff(momentDate, 'months');

@@ -2,13 +2,15 @@ import { combineReducers, createStore } from 'redux';
 import postList from './reducers/postList';
 import postDetail from './reducers/postDetail';
 import searchBox from './reducers/searchBox';
+import pictureGallery from './reducers/pictureGallery';
 import { loadState, saveState } from '../services/LocalStorageService';
 
 const persistedState = loadState();
 const reducer = combineReducers({
     postList,
     postDetail,
-    searchBox
+    searchBox,
+    pictureGallery
 });
 
 const store = createStore(

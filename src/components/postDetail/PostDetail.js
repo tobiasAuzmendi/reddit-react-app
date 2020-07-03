@@ -4,6 +4,10 @@ import { selectPost } from '../../redux/actions/postDetail';
 import './postDetail.scss';
 import PostCreationInformation from '../shared/postCreationInformation/PostCreationInformation';
 import InformativeMessage from '../shared/informativeMessage/InformativeMessage.js';
+import { faSave } from "@fortawesome/free-solid-svg-icons";
+import ClickableImage from '../shared/clickableImage/ClickableImage';
+import { addPictureToGallery } from '../../redux/actions/pictureGallery';
+import { success } from '../../services/NotificationsService';
 
 class PostDetail extends React.PureComponent {
 
@@ -11,11 +15,16 @@ class PostDetail extends React.PureComponent {
     this.props.selectPost(null);
   }
 
+  onSaveImage = (post) => {
+    this.props.addPictureToGallery(post);
+    success('Image saved!');
+  }
+
   render() {
     const { post } = this.props;
 
     return (
-      <div className="post-detail">
+      <div className="post-detail view-container">
         <h1 className="title">Selected post</h1>
         {
           !post && <InformativeMessage text="Select a post to see its information. You can find new posts from the header search bar."/>
@@ -26,7 +35,7 @@ class PostDetail extends React.PureComponent {
               <PostCreationInformation post={post}/>
               <div className="post-name">{post.title}</div>
               <div className="image-container">
-                <img alt="avatar" src={post.thumbnail || require('../../assets/images/shared/image-not-found.png')} className="card-image" />
+                <ClickableImage faIcon={faSave} onImageClicked={() => { this.onSaveImage(post) }} src={post.thumbnail || require('../../assets/images/shared/image-not-found.png')}/>
               </div>
             </div>
           )
@@ -41,7 +50,8 @@ const mapStateToProps = ({ postDetail }) => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  selectPost: post => dispatch(selectPost(post))
+  selectPost: post => dispatch(selectPost(post)),
+  addPictureToGallery: post => dispatch(addPictureToGallery(post))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PostDetail);

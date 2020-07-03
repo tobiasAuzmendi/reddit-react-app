@@ -6,6 +6,14 @@ import './searchBox.scss';
 
 class SearchBox extends React.PureComponent {
 
+  componentWillMount() {
+    this.props.setSearchText('');
+  }
+
+  /*componentWillUnmount() {
+    this.props.setSearchText('');
+  }*/
+
   onTextChange = (searchText) => {
     this.props.setSearchText(searchText);
   }

@@ -1,0 +1,39 @@
+@import "../../../styles/variables";
+
+.clickable-image {
+  position: relative;
+  img {
+    width: 100%;
+    display: block;
+    border-radius: 5px;
+  }
+  .button-wrapper {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    &:hover {
+      cursor: pointer;
+    }
+    button {
+      padding: 4px;
+      font-size: 24px;
+      background: transparent;
+      color: $reddit-orange;
+    }
+  }
+  &:hover {
+    img {
+      opacity: 0.5;
+      transform: scale(0.98);
+    }
+    .button-wrapper {
+      opacity: 1;
+    }
+  }
+}

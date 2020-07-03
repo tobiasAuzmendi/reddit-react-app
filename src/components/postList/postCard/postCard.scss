@@ -18,17 +18,22 @@
       justify-content: space-between;
       display: flex;
       flex-direction: column;
+      & > *:not(:last-child) {
+        margin-bottom: 8px;
+      }
+      .number-of-comments {
+        font-size: $font-size-sm;
+        color: $blue;
+      }
       .post-readed {
         font-size: $font-size-sm;
         color: $reddit-orange;
       }
       .dismiss-button {
-        @extend .reddit-app-secondary-button;
-        margin-top: 8px;
-        padding-left: 0;
+        padding: 4px 4px 4px 0;
       }
       .post-name {
-        margin: 16px 0;
+        margin: 8px 0 16px 0;
       }
       .participation {
         display: flex;
@@ -44,10 +49,8 @@
       }
     }
     .card-right-content {
-      .card-image {
-        height: 150px;
-        width: 150px;
-        border-radius: 5px;
+      img {
+        width: 140px;
       }
     }
   }
@@ -60,12 +63,10 @@
       .card-left-content {
         .post-name {
           font-size: 18px;
-          margin: 0 8px 16px 0;
         }
       }
       .card-right-content {
-        .card-image {
-          height: 100px;
+        img {
           width: 100px;
         }
       }
