@@ -10,10 +10,6 @@ class SearchBox extends React.PureComponent {
     this.props.setSearchText('');
   }
 
-  /*componentWillUnmount() {
-    this.props.setSearchText('');
-  }*/
-
   onTextChange = (searchText) => {
     this.props.setSearchText(searchText);
   }
