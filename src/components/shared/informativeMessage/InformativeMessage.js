@@ -1,12 +1,12 @@
 import React from 'react';
 import './informativeMessage.scss';
 
-const InformativeMessage = (props) => (
+const InformativeMessage = ({ text }) => (
   <div className="informative-message">
     <div className="informative-message-content">
-      { props.text }
+      { text }
     </div>
   </div>
 );
 
-export default InformativeMessage;
+export default React.memo(InformativeMessage);

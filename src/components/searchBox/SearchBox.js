@@ -1,44 +1,38 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import debounce from 'lodash/debounce';
 import { setSearchText } from '../../redux/actions/searchBox';
 import './searchBox.scss';
 
-class SearchBox extends React.PureComponent {
+const SearchBox = () => {
+  let debouncedFn = null;
+  const dispatch = useDispatch();
 
-  componentWillMount() {
-    this.props.setSearchText('');
-  }
+  useEffect(() => {
+    // componentDidUnmount equivalent
+    return () => {
+      dispatch(setSearchText(''))
+    }
+  }, [dispatch]);
 
-  onTextChange = (searchText) => {
-    this.props.setSearchText(searchText);
-  }
-
-  onTextChange = (event) => {
+  const onTextChange = (event) => {
     event.persist();
 
-    if (!this.debouncedFn) {
-      this.debouncedFn =  debounce(() => {
+    if (!debouncedFn) {
+      debouncedFn =  debounce(() => {
         let searchText = event.target.value;
-        this.props.setSearchText(searchText);
+        dispatch(setSearchText(searchText))
       }, 400);
     }
-    this.debouncedFn();
+    debouncedFn();
   }
 
-  render() {
-    return (
-      <div className="search-box-container">
-        <input type="text" name="searchText" placeholder="Search" onChange={(event) => this.onTextChange(event)} />
-      </div>
-    );
-  }
+  return (
+    <div className="search-box-container">
+      <input type="text" name="searchText" placeholder="Search" onChange={(event) => onTextChange(event)} />
+    </div>
+  );
 
 }
 
-const mapDispatchToProps = dispatch => ({
-  setSearchText: drinks => dispatch(setSearchText(drinks))
-});
-
-
-export default connect(null, mapDispatchToProps)(SearchBox);
+export default React.memo(SearchBox);

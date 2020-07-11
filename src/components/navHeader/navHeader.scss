@@ -18,6 +18,10 @@ $logo-width-sm: 100px;
     }
     .dropdown-menu-container {
       text-align: right;
+      ul {
+        list-style-type: none;
+        padding: 0;
+      }
       .glyphicon {
         // I wrote these !important as a workaround to win to the inline styles made by the library
         // Library docs -> https://github.com/grizzthedj/react-bootstrap-dropdown-menu#readme

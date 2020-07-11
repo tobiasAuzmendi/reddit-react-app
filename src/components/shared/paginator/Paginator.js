@@ -11,4 +11,4 @@ const Paginator = ({ page, onPrevPageClick, onNextPageClick, disableNext }) => (
   </div>
 );
 
-export default Paginator;
+export default React.memo(Paginator);

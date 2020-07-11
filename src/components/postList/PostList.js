@@ -1,5 +1,5 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useCallback } from 'react';
+import { useSelector, useDispatch, shallowEqual, useStore } from "react-redux";
 import PostCard from './postCard/PostCard.js';
 import {
   loadPosts,
@@ -21,177 +21,158 @@ import { faTimesCircle, faBookReader, faArrowAltCircleLeft } from "@fortawesome/
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
-class PostList extends React.Component {
 
-    componentDidUpdate(prevProps) {
-      const { searchBoxText } = this.props;
+const PostList = () => {
+  const paginationConfig = useSelector(state => state.postList.paginationConfig, shallowEqual);
+  const isLoading = useSelector(state => state.postList.isLoading);
+  const posts = useSelector(state => state.postList.posts, shallowEqual);
+  const postListVisible = useSelector(state => state.postList.postListVisible);
+  const searchBoxText = useSelector(state => state.searchBox.text);
+  const store = useStore();
+  const dispatch = useDispatch();
 
-      if (searchBoxText !== prevProps.searchBoxText) {
-        if (searchBoxText) {
-          this.props.selectPost(null);
-          this.fetchPosts(searchBoxText, 1, null, null);
-        } else {
-          this.cleanUpState(true);
-        }
-      }
+  useEffect(() => {
+    if (searchBoxText) {
+      dispatch(selectPost(null));
+      fetchPosts(searchBoxText, 1, null, null);
+    } else {
+      cleanUpState(true);
     }
+  }, [searchBoxText]);
 
-    componentWillMount() {
-      this.cleanUpState(true);
+  useEffect(() => {
+    // componentDidUnmount equivalent
+    return () => {
+      cleanUpState(true);
     }
+  }, []);
 
-    fetchPosts(searchWord, page, prevPageId, nextPageId) {
-      this.props.setPostsLoading();
+  const cleanUpState = (cleanPosts) => {
+    dispatch(selectPost(null));
+    dispatch(setPaginationConfig(getinitialPagination()));
 
-      getPosts(searchWord, page, prevPageId, nextPageId).then((response) => {
-        this.props.loadPosts(this.props.searchBoxText ? response.children : []);
-
-        this.props.setPaginationConfig({
-          page,
-          prevPageId: response.before,
-          nextPageId: response.after
-        });
-      })
-      .catch(() => {
-        this.cleanUpState(true);
-      });
+    if (cleanPosts) {
+      dispatch(loadPosts([]));
     }
+  }
 
-    cleanUpState(cleanPosts) {
-      this.props.selectPost(null);
-      this.props.setPaginationConfig(this.getinitialPagination());
+  const fetchPosts = (searchWord, page, prevPageId, nextPageId) => {
+    dispatch(setPostsLoading());
 
-      if (cleanPosts) {
-        this.props.loadPosts([]);
-      }
-    }
+    getPosts(searchWord, page, prevPageId, nextPageId).then((response) => {
+      dispatch(loadPosts(searchBoxText ? response.children : []));
 
-    getinitialPagination = () => ({
-      page: 0,
-      prevPageId: null,
-      nextPageId: null
+      dispatch(setPaginationConfig({
+        page,
+        prevPageId: response.before,
+        nextPageId: response.after
+      }));
+    })
+    .catch(() => {
+      cleanUpState(true);
     });
+  }
 
-    onGetPrevPage = () => {
-      const { prevPageId, page } = this.props.paginationConfig;
+  const getinitialPagination = () => ({
+    page: 0,
+    prevPageId: null,
+    nextPageId: null
+  });
 
-      this.fetchPosts(this.props.searchBoxText, page - 1, prevPageId, null);
+  const onGetPrevPage = useCallback(() => {
+    const { prevPageId, page } = paginationConfig;
+
+    fetchPosts(searchBoxText, page - 1, prevPageId, null);
+  }, [dispatch]);
+
+  const onGetNextPage = useCallback(() => {
+    const { nextPageId, page } = paginationConfig;
+
+    fetchPosts(searchBoxText, page + 1, null, nextPageId);
+  }, [dispatch]);
+
+  const onPostSelection = useCallback((post) => {
+    const readedPost = {
+      ...post,
+      readed: true
+    };
+    dispatch(setPostAsReaded(readedPost));
+    dispatch(selectPost(readedPost));
+    dispatch(togglePostListVisible());
+  }, [dispatch]);
+
+  const onPostDismission = useCallback((postId) => {
+    dispatch(dismissPost(postId));
+
+    const selectedPost = store.getState().postDetail.selectedPost;
+    if (selectedPost && selectedPost.id === postId) {
+      dispatch(selectPost(null));
     }
+  }, [dispatch]);
 
-    onGetNextPage = () => {
-      const { nextPageId, page } = this.props.paginationConfig;
+  const onAllPostsDismission =  useCallback(() => {
+    dispatch(dismissAll());
+    cleanUpState(false);
+  }, [dispatch]);
 
-      this.fetchPosts(this.props.searchBoxText, page + 1, null, nextPageId);
-    }
+  const onShowReaded = useCallback(() => {
+    dispatch(showReaded());
+    cleanUpState(false);
+  }, [dispatch]);
 
-    onPostSelection = (post) => {
-      const readedPost = {
-        ...post,
-        readed: true
-      };
-      this.props.setPostAsReaded(readedPost);
-      this.props.selectPost(readedPost);
-      this.props.togglePostListVisible();
-    }
+  const onTogglePostListVisible = useCallback(() => {
+    dispatch(togglePostListVisible());
+  }, [dispatch]);
 
-    onPostDismission = (postId) => {
-      this.props.dismissPost(postId);
-
-      const selectedPost = this.props.selectedPost;
-      if (selectedPost && selectedPost.id === postId) {
-        this.props.selectPost(null);
-      }
-    }
-
-    onAllPostsDismission = () => {
-      this.props.dismissAll();
-      this.cleanUpState(false);
-    }
-
-    onShowReaded = () => {
-      this.props.showReaded();
-      this.cleanUpState(false);
-    }
-
-    onTogglePostListVisible = () => {
-      this.props.togglePostListVisible();
-    }
-
-    render() {
-      const { isLoading, posts, searchBoxText, paginationConfig, postListVisible } = this.props;
-
-      return (
-        <div className={`post-list ${postListVisible ? 'visible' : ''}`}>
-          <div className="view-container">
-            <h1 className="title">Posts</h1>
-            <div className="actions">
-              <button onClick={ this.onAllPostsDismission } className="reddit-app-primary-button icon-text-button">
-                <FontAwesomeIcon className="icon" icon={faTimesCircle} /> Dismiss All
-              </button>
-              <button onClick={ this.onShowReaded } className="reddit-app-primary-button icon-text-button">
-                <FontAwesomeIcon className="icon" icon={faBookReader} /> Show Readed
-              </button>
-            </div>
-            <div className="list-content">
-              <TransitionGroup className="transition-group">
-                {
-                  !isLoading && !!posts.length && posts.map(post => (
-                    <CSSTransition key={post.id} timeout={500} classNames="move">
-                      <PostCard post={post} onCardClick={this.onPostSelection} onDismissClick={this.onPostDismission} onSaveImageClick={this.onSaveImage}/>
-                    </CSSTransition>
-                  ))
-                }
-              </TransitionGroup>
-              {
-                isLoading && <Spinner />
-              }
-              {
-                !isLoading && searchBoxText && !posts.length &&
-                <InformativeMessage text="There are no results for the specified search."/>
-              }
-              {
-                !isLoading && !searchBoxText && !posts.length &&
-                <InformativeMessage text="Enter a Subreddit name in the search box above in order to see associated posts."/>
-              }
-            </div>
+  return (
+    <div className={`post-list ${postListVisible ? 'visible' : ''}`}>
+      <div className="view-container">
+        <h1 className="title">Posts</h1>
+        <div className="actions">
+          <button onClick={ onAllPostsDismission } className="reddit-app-primary-button icon-text-button">
+            <FontAwesomeIcon className="icon" icon={faTimesCircle} /> Dismiss All
+          </button>
+          <button onClick={ onShowReaded } className="reddit-app-primary-button icon-text-button">
+            <FontAwesomeIcon className="icon" icon={faBookReader} /> Show Readed
+          </button>
+        </div>
+        <div className="list-content">
+          <TransitionGroup className="transition-group">
             {
-              !isLoading && !!posts.length && paginationConfig && paginationConfig.page !== 0 &&
-              <Paginator page={paginationConfig.page} onPrevPageClick={ this.onGetPrevPage } onNextPageClick={ this.onGetNextPage } disableNext={!paginationConfig.nextPageId && (!posts.length || posts.length < PAGE_SIZE)}/>
+              !isLoading && !!posts.length && posts.map(post => (
+                <CSSTransition key={post.id} timeout={500} classNames="move">
+                  <PostCard post={post} onCardClick={onPostSelection} onDismissClick={onPostDismission}/>
+                </CSSTransition>
+              ))
             }
-          </div>
+          </TransitionGroup>
           {
-            !postListVisible &&
-            <div className="nav-buttons-column">
-              <button onClick={ this.onTogglePostListVisible } className="reddit-app-primary-button">
-                <FontAwesomeIcon className="icon" icon={faArrowAltCircleLeft} />
-              </button>
-            </div>
+            isLoading && <Spinner />
+          }
+          {
+            !isLoading && searchBoxText && !posts.length &&
+            <InformativeMessage text="There are no results for the specified search."/>
+          }
+          {
+            !isLoading && !searchBoxText && !posts.length &&
+            <InformativeMessage text="Enter a Subreddit name in the search box above in order to see associated posts."/>
           }
         </div>
-      );
-    }
+        {
+          !isLoading && !!posts.length && paginationConfig && paginationConfig.page !== 0 &&
+          <Paginator page={paginationConfig.page} onPrevPageClick={ onGetPrevPage } onNextPageClick={ onGetNextPage } disableNext={!paginationConfig.nextPageId && (!posts.length || posts.length < PAGE_SIZE)}/>
+        }
+      </div>
+      {
+        !postListVisible &&
+        <div className="nav-buttons-column">
+          <button onClick={ onTogglePostListVisible } className="reddit-app-primary-button">
+            <FontAwesomeIcon className="icon" icon={faArrowAltCircleLeft} />
+          </button>
+        </div>
+      }
+    </div>
+  );
+};
 
-}
-
-const mapStateToProps = ({ postList, searchBox, postDetail }) => ({
-  posts: postList.posts,
-  isLoading: postList.isLoading,
-  paginationConfig: postList.paginationConfig,
-  postListVisible: postList.postListVisible,
-  searchBoxText: searchBox.text,
-  selectedPost: postDetail.selectedPost
-});
-
-const mapDispatchToProps = dispatch => ({
-  loadPosts: posts => dispatch(loadPosts(posts)),
-  setPostsLoading: posts => dispatch(setPostsLoading(posts)),
-  selectPost: post => dispatch(selectPost(post)),
-  dismissPost: post => dispatch(dismissPost(post)),
-  dismissAll: post => dispatch(dismissAll(post)),
-  showReaded: post => dispatch(showReaded(post)),
-  setPostAsReaded: postId => dispatch(setPostAsReaded(postId)),
-  setPaginationConfig: page => dispatch(setPaginationConfig(page)),
-  togglePostListVisible: () => dispatch(togglePostListVisible())
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(PostList);
+export default PostList;

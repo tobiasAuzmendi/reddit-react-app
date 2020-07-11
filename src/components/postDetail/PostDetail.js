@@ -1,5 +1,5 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from "react-redux";
 import { selectPost } from '../../redux/actions/postDetail';
 import './postDetail.scss';
 import PostCreationInformation from '../shared/postCreationInformation/PostCreationInformation';
@@ -9,49 +9,41 @@ import ClickableImage from '../shared/clickableImage/ClickableImage';
 import { addPictureToGallery } from '../../redux/actions/pictureGallery';
 import { success } from '../../services/NotificationsService';
 
-class PostDetail extends React.PureComponent {
+const PostDetail = () => {
+  const post = useSelector(state => state.postDetail.selectedPost);
+  const dispatch = useDispatch();
 
-  componentWillUnmount() {
-    this.props.selectPost(null);
-  }
+  useEffect(() => {
+    // componentDidUnmount equivalent
+    return () => {
+      dispatch(selectPost(null));
+    }
+  }, [dispatch]);
 
-  onSaveImage = (post) => {
-    this.props.addPictureToGallery(post);
+  const onSaveImage = (post) => {
+    dispatch(addPictureToGallery(post));
     success('Image saved!');
   }
 
-  render() {
-    const { post } = this.props;
-
-    return (
-      <div className="post-detail view-container">
-        <h1 className="title">Selected post</h1>
-        {
-          !post && <InformativeMessage text="Select a post to see its information. You can find new posts from the header search bar."/>
-        }
-        {
-          post && (
-            <div className="post-content">
-              <PostCreationInformation post={post}/>
-              <div className="post-name">{post.title}</div>
-              <div className="image-container">
-                <ClickableImage faIcon={faSave} onImageClicked={() => { this.onSaveImage(post) }} src={post.thumbnail || require('../../assets/images/shared/image-not-found.png')}/>
-              </div>
+  return (
+    <div className="post-detail view-container">
+      <h1 className="title">Selected post</h1>
+      {
+        !post && <InformativeMessage text="Select a post to see its information. You can find new posts from the header search bar."/>
+      }
+      {
+        post && (
+          <div className="post-content">
+            <PostCreationInformation post={post}/>
+            <div className="post-name">{post.title}</div>
+            <div className="image-container">
+              <ClickableImage faIcon={faSave} onImageClicked={() => { onSaveImage(post) }} src={post.thumbnail || require('../../assets/images/shared/image-not-found.png')}/>
             </div>
-          )
-        }
-      </div>
-    );
-  }
+          </div>
+        )
+      }
+    </div>
+  );
 }
 
-const mapStateToProps = ({ postDetail }) => ({
-  post: postDetail.selectedPost
-});
-
-const mapDispatchToProps = dispatch => ({
-  selectPost: post => dispatch(selectPost(post)),
-  addPictureToGallery: post => dispatch(addPictureToGallery(post))
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(PostDetail);
+export default React.memo(PostDetail);

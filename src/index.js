@@ -25,13 +25,15 @@ const App = () => (
         <Route
           path="/posts"
           exact
-          component={Layout(PostsContent)}
-        />
+        >
+          { Layout(PostsContent) }
+        </Route>
         <Route
           path="/pictures"
           exact
-          component={Layout(PictureGallery)}
-        />
+        >
+          { Layout(PictureGallery) }
+        </Route>
         <Redirect to="/posts" />
       </Switch>
       <NotificationContainer enterTimeout={800} leaveTimeout={800}/>

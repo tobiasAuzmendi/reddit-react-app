@@ -14,4 +14,7 @@ const ClickableImage = ({ faIcon, onImageClicked, src}) => (
   </div>
 );
 
-export default ClickableImage;
+export default React.memo(
+  ClickableImage,
+  (prevProps, nextProps) => prevProps.src === nextProps.src
+);
