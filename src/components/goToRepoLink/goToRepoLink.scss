@@ -1,0 +1,25 @@
+@import "../../styles/variables";
+
+a.go-to-repo-link {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  padding: 8px;
+  -moz-box-shadow:  3px 3px 10px $gray-secondary;
+  -webkit-box-shadow:  3px 3px 10px $gray-secondary;
+  box-shadow:  3px 3px 10px $gray-secondary;
+  &:hover,
+  &:visited {
+    color: $reddit-orange;
+  }
+}
+
+@media (max-width: $sm-size) {
+  .go-to-repo-link {
+    display: none;
+  }
+}

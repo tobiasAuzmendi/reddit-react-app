@@ -1,5 +1,5 @@
 import axios from 'axios';
-const BASE_URL = 'http://www.reddit.com/r';
+const BASE_URL = 'https://www.reddit.com/r';
 const TOP_PATH = 'top';
 export const PAGE_SIZE = 10;
 
