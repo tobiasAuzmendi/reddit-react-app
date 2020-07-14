@@ -33,7 +33,7 @@ const PostList = () => {
   const dispatch = useDispatch();
   const prevPostsList = usePreviousValue(posts);
   const [ lasDismissedPostId, setLastDismissedPostId ] = useState('');
-  const showPostsWereDismissed = prevPostsList && prevPostsList.length && prevPostsList.some(post => post.id === lasDismissedPostId) && !posts.some(post => post.id === lasDismissedPostId);
+  const showPostsWereDismissed = !!(prevPostsList && prevPostsList.length && prevPostsList.some(post => post.id === lasDismissedPostId) && !posts.some(post => post.id === lasDismissedPostId));
 
   useEffect(() => {
     if (searchBoxText) {
