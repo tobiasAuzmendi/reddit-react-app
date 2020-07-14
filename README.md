@@ -27,7 +27,11 @@ The last command will run the app in [http://localhost:3000](http://localhost:30
 
 ## Testing
 
-// WILL DO
+From the project root directory you can run the following commands to run the project tests:
+
+```
+npm test
+```
 
 ## Deployment
 

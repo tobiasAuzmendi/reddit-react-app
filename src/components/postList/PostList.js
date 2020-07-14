@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { useSelector, useDispatch, shallowEqual, useStore } from "react-redux";
 import PostCard from './postCard/PostCard.js';
 import {
@@ -12,7 +12,7 @@ import {
   togglePostListVisible
 } from '../../redux/actions/postList.js';
 import { selectPost } from '../../redux/actions/postDetail';
-import { getPosts, PAGE_SIZE } from '../../services/PostsService';
+import { getPosts } from '../../services/PostsService';
 import Spinner from '../shared/spinner/Spinner';
 import Paginator from '../shared/paginator/Paginator';
 import './postList.scss';
@@ -20,7 +20,7 @@ import InformativeMessage from '../shared/informativeMessage/InformativeMessage.
 import { faTimesCircle, faBookReader, faArrowAltCircleLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
-
+import usePreviousValue from '../../hooks/previousValue';
 
 const PostList = () => {
   const paginationConfig = useSelector(state => state.postList.paginationConfig, shallowEqual);
@@ -29,7 +29,11 @@ const PostList = () => {
   const postListVisible = useSelector(state => state.postList.postListVisible);
   const searchBoxText = useSelector(state => state.searchBox.text);
   const store = useStore();
+  const selectedPost = store.postDetail && store.postDetail.selectedPost;
   const dispatch = useDispatch();
+  const prevPostsList = usePreviousValue(posts);
+  const [ lasDismissedPostId, setLastDismissedPostId ] = useState('');
+  const showPostsWereDismissed = prevPostsList && prevPostsList.length && prevPostsList.some(post => post.id === lasDismissedPostId) && !posts.some(post => post.id === lasDismissedPostId);
 
   useEffect(() => {
     if (searchBoxText) {
@@ -41,7 +45,6 @@ const PostList = () => {
   }, [searchBoxText]);
 
   useEffect(() => {
-    // componentDidUnmount equivalent
     return () => {
       cleanUpState(true);
     }
@@ -56,11 +59,17 @@ const PostList = () => {
     }
   }
 
+  const getinitialPagination = () => ({
+    page: 0,
+    prevPageId: null,
+    nextPageId: null
+  });
+
   const fetchPosts = (searchWord, page, prevPageId, nextPageId) => {
     dispatch(setPostsLoading());
 
     getPosts(searchWord, page, prevPageId, nextPageId).then((response) => {
-      dispatch(loadPosts(searchBoxText ? response.children : []));
+      dispatch(loadPosts(response.children));
 
       dispatch(setPaginationConfig({
         page,
@@ -73,23 +82,17 @@ const PostList = () => {
     });
   }
 
-  const getinitialPagination = () => ({
-    page: 0,
-    prevPageId: null,
-    nextPageId: null
-  });
-
   const onGetPrevPage = useCallback(() => {
     const { prevPageId, page } = paginationConfig;
 
     fetchPosts(searchBoxText, page - 1, prevPageId, null);
-  }, [dispatch]);
+  }, [fetchPosts, paginationConfig, searchBoxText]);
 
   const onGetNextPage = useCallback(() => {
     const { nextPageId, page } = paginationConfig;
 
     fetchPosts(searchBoxText, page + 1, null, nextPageId);
-  }, [dispatch]);
+  }, [fetchPosts, paginationConfig, searchBoxText]);
 
   const onPostSelection = useCallback((post) => {
     const readedPost = {
@@ -103,12 +106,12 @@ const PostList = () => {
 
   const onPostDismission = useCallback((postId) => {
     dispatch(dismissPost(postId));
+    setLastDismissedPostId(postId);
 
-    const selectedPost = store.getState().postDetail.selectedPost;
     if (selectedPost && selectedPost.id === postId) {
       dispatch(selectPost(null));
     }
-  }, [dispatch]);
+  }, [dispatch, selectedPost]);
 
   const onAllPostsDismission =  useCallback(() => {
     dispatch(dismissAll());
@@ -136,6 +139,12 @@ const PostList = () => {
             <FontAwesomeIcon className="icon" icon={faBookReader} /> Show Readed
           </button>
         </div>
+        {
+          showPostsWereDismissed &&
+          <div className="posts-dismissed-message">
+            <InformativeMessage text="Some posts were dismissed" />
+          </div>
+        }
         <div className="list-content">
           <TransitionGroup className="transition-group">
             {
@@ -160,7 +169,7 @@ const PostList = () => {
         </div>
         {
           !isLoading && !!posts.length && paginationConfig && paginationConfig.page !== 0 &&
-          <Paginator page={paginationConfig.page} onPrevPageClick={ onGetPrevPage } onNextPageClick={ onGetNextPage } disableNext={!paginationConfig.nextPageId && (!posts.length || posts.length < PAGE_SIZE)}/>
+          <Paginator page={paginationConfig.page} onPrevPageClick={ onGetPrevPage } onNextPageClick={ onGetNextPage } disableNext={!paginationConfig.nextPageId}/>
         }
       </div>
       {

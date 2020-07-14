@@ -15,7 +15,9 @@ const reducer = combineReducers({
 
 const store = createStore(
     reducer,
-    persistedState
+    persistedState,
+    // uncomment next line to enable redux devtools extension
+    // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
 store.subscribe(() => {
