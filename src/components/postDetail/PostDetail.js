@@ -18,7 +18,7 @@ const PostDetail = () => {
     return () => {
       dispatch(selectPost(null));
     }
-  }, [dispatch]);
+  }, []);
 
   const onSaveImage = (post) => {
     dispatch(addPictureToGallery(post));
