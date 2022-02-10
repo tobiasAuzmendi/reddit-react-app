@@ -13,7 +13,7 @@
     "axios": "^0.19.2",
     "lodash": "^4.17.15",
     "moment": "^2.27.0",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "react": "^16.13.1",
     "react-bootstrap-dropdown-menu": "^1.1.15",
     "react-dom": "^16.13.1",
